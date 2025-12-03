@@ -7,7 +7,7 @@ export default function CurrentWeather({ loading }) {
       <div>
         <div className="text-sm text-white/80">Cairo</div>
         <div className="text-4xl font-semibold text-white">+30.42°</div>
-        <div className="text-sm text-white/70">Clear sky · Feels like +31.2°</div>
+  <div className="text-sm text-white/70">Clear cloud · Feels like +31.2°</div>
       </div>
       <div className="text-6xl">⛅</div>
     </div>
