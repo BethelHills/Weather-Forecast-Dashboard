@@ -22,8 +22,8 @@ export default function App() {
   const toggleTheme = () => setTheme((t) => (t === "light" ? "dark" : "light"));
 
   return (
-  <div className={`${theme === "light" ? "light-body" : "dark-body"} min-h-screen`}>
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-6 flex flex-col min-h-screen">
+    <div className={`${theme === "light" ? "light-body" : "dark-body"} flex flex-col`}>
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-6 flex flex-col">
   <header className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4 w-full sm:w-auto">
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full glass flex items-center justify-center text-white text-lg sm:text-xl">☁</div>
