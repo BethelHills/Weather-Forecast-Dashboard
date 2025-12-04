@@ -73,8 +73,8 @@ export default function App() {
       </div>
     </main>
 
-      {/* Footer */}
-      <footer className="text-center text-white/70 text-sm py-4 mt-6">© 2025 BCodeStack-Clouds. All rights reserved.</footer>
+  {/* Footer */}
+  <footer className="text-center text-white/70 text-sm mt-10">© 2025 BCodeStack-Clouds. All rights reserved.</footer>
     </div>
   </div>
     );
