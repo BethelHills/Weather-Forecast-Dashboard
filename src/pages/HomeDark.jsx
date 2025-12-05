@@ -132,7 +132,7 @@ export default function HomeDark() {
           <p className="text-sm font-semibold">{weatherStatus}!</p>
 
           {/* Right text */}
-          <p className="text-white/70 hidden lg:block">
+          <p className="text-white/70 text-xs sm:text-sm">
             The future looks <span className="font-semibold text-white">bright</span> — stay tuned!
           </p>
 
