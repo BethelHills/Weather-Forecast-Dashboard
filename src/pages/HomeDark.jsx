@@ -1,7 +1,14 @@
+import { useState } from "react";
 import { useTheme } from "../context/ThemeContext";
 
 export default function HomeDark() {
   const { theme, toggleTheme } = useTheme();
+
+  const [weatherStatus, setWeatherStatus] = useState("Cloudy");
+
+  const toggleWeather = () => {
+    setWeatherStatus(prev => (prev === "Cloudy" ? "Rainy" : "Cloudy"));
+  };
 
   const cities = [
     { name: "Cairo", temp1: "+31.2°", temp2: "+30.22°", status: "Clear cloud", icon: "/icons/sun.svg" },
@@ -66,7 +73,7 @@ export default function HomeDark() {
           {/* Date */}
           <p>Sun ,18 May</p>
 
-          {/* Toggle Switch */}
+          {/* Theme Toggle Switch */}
           <div 
             onClick={toggleTheme} 
             className="relative w-14 h-7 rounded-full cursor-pointer transition-all duration-300"
@@ -92,6 +99,37 @@ export default function HomeDark() {
               )}
             </div>
           </div>
+
+          {/* Weather Status Toggle Switch */}
+          <div 
+            onClick={toggleWeather} 
+            className="relative w-14 h-7 rounded-full cursor-pointer transition-all duration-300"
+            style={{
+              background: weatherStatus === "Cloudy"
+                ? "linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%)"
+                : "linear-gradient(180deg, rgba(59,130,246,0.8) 0%, rgba(37,99,235,0.8) 100%)"
+            }}
+          >
+            <div
+              className={`absolute top-1 left-1 w-5 h-5 bg-white rounded-full shadow-lg transition-all duration-300 flex items-center justify-center ${
+                weatherStatus === "Rainy" ? "translate-x-7" : ""
+              }`}
+            >
+              {weatherStatus === "Rainy" ? (
+                <svg className="w-3 h-3 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 16h-8z" />
+                  <path d="M7 16a1 1 0 100-2 1 1 0 000 2zM9 18a1 1 0 100-2 1 1 0 000 2zM11 16a1 1 0 100-2 1 1 0 000 2z" />
+                </svg>
+              ) : (
+                <svg className="w-3 h-3 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 16h-8z" />
+                </svg>
+              )}
+            </div>
+          </div>
+
+          {/* Weather Status Text */}
+          <p className="text-sm font-semibold">{weatherStatus}!</p>
 
           {/* Right text */}
           <p className="text-white/70">
