@@ -20,7 +20,7 @@ export default function HomeDark() {
 
   return (
     <div 
-      className={`min-h-screen w-full text-white px-16 py-12 ${
+      className={`min-h-screen w-full text-white px-4 py-6 sm:px-8 sm:py-8 md:px-12 md:py-10 lg:px-16 lg:py-12 ${
         theme === "light" 
           ? "bg-gradient-to-br from-[#C48EF1] to-[#5076B4]" 
           : "bg-gradient-to-br from-[#002E78] to-[#160524]"
@@ -31,16 +31,16 @@ export default function HomeDark() {
     >
 
       {/* Header */}
-      <div className="flex items-center justify-between px-2 mb-16">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 lg:gap-0 px-2 mb-8 sm:mb-12 lg:mb-16">
 
         {/* Left side: Logo + Search */}
-        <div className="flex items-center gap-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 w-full lg:w-auto">
           {/* Logo */}
-          <img src="/icons/cloud-sun.svg" alt="BCodeStack-Clouds logo" className="w-12" />
+          <img src="/icons/cloud-sun.svg" alt="BCodeStack-Clouds logo" className="w-10 sm:w-12" />
 
           {/* Search bar */}
           <div 
-            className="flex items-center gap-3 px-6 py-3 rounded-2xl w-[430px]"
+            className="flex items-center gap-3 px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl w-full sm:w-[300px] md:w-[380px] lg:w-[430px]"
             style={{
               background: "linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%)",
               backdropFilter: "blur(8px)",
@@ -68,10 +68,10 @@ export default function HomeDark() {
         </div>
 
         {/* Right side: Date + Toggle + Text */}
-        <div className="flex items-center gap-10 text-sm">
+        <div className="flex flex-wrap items-center gap-4 sm:gap-6 lg:gap-10 text-xs sm:text-sm w-full lg:w-auto justify-between lg:justify-start">
 
           {/* Date */}
-          <p>Sun ,18 May</p>
+          <p className="hidden sm:block">Sun ,18 May</p>
 
           {/* Theme Toggle Switch */}
           <div 
@@ -132,7 +132,7 @@ export default function HomeDark() {
           <p className="text-sm font-semibold">{weatherStatus}!</p>
 
           {/* Right text */}
-          <p className="text-white/70">
+          <p className="text-white/70 hidden lg:block">
             The future looks <span className="font-semibold text-white">bright</span> — stay tuned!
           </p>
 
@@ -141,11 +141,11 @@ export default function HomeDark() {
       </div>
 
       {/* Body */}
-      <div className="flex justify-between items-start mb-20">
+      <div className="flex flex-col lg:flex-row justify-between items-start gap-8 lg:gap-0 mb-12 sm:mb-16 lg:mb-20">
         
         {/* Transparent Box for Writeup */}
-        <div className="bg-white/10 rounded-xl p-8 max-w-2xl w-full border border-white/20">
-          <h1 className="text-4xl font-semibold mb-4">Welcome to BCodeStack-Clouds</h1>
+        <div className="bg-white/10 rounded-xl p-6 sm:p-8 max-w-2xl w-full border border-white/20">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mb-4">Welcome to BCodeStack-Clouds</h1>
 
           <p className="text-white/80 leading-relaxed mb-2">
             At BCodeStack-Clouds, we believe weather should not just be data, it should be clear,
@@ -164,28 +164,34 @@ export default function HomeDark() {
           </p>
         </div>
 
-        <div className="flex flex-col items-center">
-          <img src="/weather-icons/BCodeStack-Clouds-logo.png" className="w-64 opacity-90" />
-          <p className="text-white text-lg font-semibold mt-2">BCodeStack-Clouds</p>
+        <div className="flex flex-col items-center w-full lg:w-auto">
+          <img src="/weather-icons/BCodeStack-Clouds-logo.png" className="w-48 sm:w-56 lg:w-64 opacity-90" />
+          <p className="text-white text-base sm:text-lg font-semibold mt-2">BCodeStack-Clouds</p>
         </div>
       </div>
 
       {/* Cities */}
-      <h2 className="text-xl font-semibold mt-20 mb-6">Major Cities Weather</h2>
+      <h2 className="text-lg sm:text-xl font-semibold mt-12 sm:mt-16 lg:mt-20 mb-4 sm:mb-6">Major Cities Weather</h2>
 
-      <div className="grid grid-cols-5 border border-white/20 rounded-xl overflow-hidden">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 border border-white/20 rounded-xl overflow-hidden">
 
         {cities.map((city, index) => (
           <div
             key={city.name}
-            className={`p-6 text-center border-r border-dotted border-white/20 ${
-              index === 4 ? "border-r-0" : ""
+            className={`p-4 sm:p-6 text-center border-b sm:border-b-0 sm:border-r border-dotted border-white/20 ${
+              index === cities.length - 1 ? "border-b-0" : ""
+            } ${
+              (index + 1) % 2 === 0 ? "sm:border-r-0" : ""
+            } ${
+              (index + 1) % 3 === 0 ? "md:border-r-0" : ""
+            } ${
+              (index + 1) % 5 === 0 ? "lg:border-r-0" : ""
             }`}
           >
-            <h3 className="text-lg mb-3">{city.name}</h3>
-            <img src={city.icon} alt={`${city.name} weather icon`} className="mx-auto w-16 mb-4" />
-            <p>{city.temp1} {city.temp2}</p>
-            <p className="text-sm text-white/70">{city.status}</p>
+            <h3 className="text-base sm:text-lg mb-2 sm:mb-3">{city.name}</h3>
+            <img src={city.icon} alt={`${city.name} weather icon`} className="mx-auto w-12 sm:w-16 mb-3 sm:mb-4" />
+            <p className="text-sm sm:text-base">{city.temp1} {city.temp2}</p>
+            <p className="text-xs sm:text-sm text-white/70">{city.status}</p>
           </div>
         ))}
 
