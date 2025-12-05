@@ -1,43 +1,103 @@
-import React from "react";
+import { useTheme } from "../context/ThemeContext";
 
 export default function HomeDark() {
+  const { theme, toggleTheme } = useTheme();
+
+  const cities = [
+    { name: "Cairo", temp1: "+31.2°", temp2: "+30.22°", status: "Clear cloud", icon: "/weather-icons/sun.png" },
+    { name: "London", temp1: "+30.2°", temp2: "+29.12°", status: "Cloudy sky", icon: "/weather-icons/sun-cloud.png" },
+    { name: "Sydney", temp1: "+31.2°", temp2: "+30.22°", status: "Clear cloud", icon: "/weather-icons/sun.png" },
+    { name: "Tokyo", temp1: "+31.2°", temp2: "+30.22°", status: "Clear cloud", icon: "/weather-icons/windy.png" },
+    { name: "Dubai", temp1: "+31.2°", temp2: "+30.22°", status: "Rainy street", icon: "/weather-icons/rain.png" },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-r from-darkStart to-darkEnd text-white px-10 py-8">
-      
+    <div className="min-h-screen w-full bg-gradient-to-br from-[#002E78] to-[#160524] text-white px-16 py-12">
+
       {/* Header */}
-      <div className="flex items-center justify-between mb-12">
-        <input
-          className="bg-white/10 px-4 py-2 rounded-lg outline-none w-96"
-          placeholder="Search the clouds..."
-        />
-        <p>Sun, 18 May • Cloudy</p>
+      <div className="flex items-center justify-between mb-16">
+
+        <div className="flex items-center gap-4">
+          <img src="/weather-icons/cloud-outline.png" className="w-10" />
+
+          <div className="bg-white/10 px-5 py-3 rounded-xl w-[420px]">
+            <input
+              placeholder="Search the clouds..."
+              className="bg-transparent text-sm text-white/80 outline-none w-full"
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center gap-6 text-sm">
+
+          <p>Sun ,18 May</p>
+
+          <div onClick={toggleTheme} className="flex items-center gap-2 cursor-pointer">
+            <div className="w-10 h-5 rounded-full bg-white/20 flex items-center px-1">
+              <div
+                className={`w-4 h-4 bg-white rounded-full transition-all duration-300 ${
+                  theme === "light" ? "translate-x-5" : ""
+                }`}
+              ></div>
+            </div>
+            <p>{theme === "dark" ? "Cloudy!" : "Sunny!"}</p>
+          </div>
+
+          <p>The future looks <span className="font-semibold">bright</span> — stay tuned!</p>
+        </div>
       </div>
 
-      {/* Welcome Section */}
-      <div className="mb-14 max-w-2xl">
-        <h1 className="text-3xl font-bold mb-3">Welcome to BCodeStack-Clouds</h1>
-        <p className="text-white/70">
-          At BCodeStack-Clouds, we believe weather should just not be data. It should be
-          clear, beautiful, and useful.
-        </p>
+      {/* Body */}
+      <div className="flex justify-between items-start">
+
+        <div className="max-w-xl">
+          <h1 className="text-4xl font-semibold mb-4">Welcome to BCodeStack-Clouds</h1>
+
+          <p className="text-white/80 leading-relaxed mb-2">
+            At BCodeStack-Clouds, we believe weather should not just be data, it should be clear,
+            beautiful, and useful.
+          </p>
+
+          <p className="text-white/80 leading-relaxed mb-6">
+            This app was created to help you stay prepared for your day with accurate
+            forecasts, stunning visuals, and smart features that make checking the weather
+            feel less like a chore and more like a glance at the sky.
+          </p>
+
+          <p className="text-white/80 leading-relaxed">
+            Whether you are planning a trip, dressing for the day, or just curious about
+            the clouds above.
+          </p>
+        </div>
+
+        <img src="/weather-icons/BCodeStack-Clouds-logo.png" className="w-64 opacity-90" />
       </div>
 
       {/* Cities */}
-      <h2 className="mb-6 text-xl font-semibold">Major Cities Weather</h2>
+      <h2 className="text-xl font-semibold mt-20 mb-6">Major Cities Weather</h2>
 
-      <div className="grid grid-cols-5 gap-6">
-        { ["Cairo", "London", "Sydney", "Tokyo", "Dubai"].map((city) => (
+      <div className="grid grid-cols-5 border border-white/20 rounded-xl overflow-hidden">
+
+        {cities.map((city, index) => (
           <div
-            key={city}
-            className="bg-white/10 p-6 rounded-xl text-center"
+            key={city.name}
+            className={`p-6 text-center border-r border-dotted border-white/20 ${
+              index === 4 ? "border-r-0" : ""
+            }`}
           >
-            <img src="/icons/sun.png" className="mx-auto mb-3 w-14" />
-            <h3 className="mb-1">{city}</h3>
-            <p>+31.2° • +30.22°</p>
-            <p className="text-sm text-white/70">Clear sky</p>
+            <h3 className="text-lg mb-3">{city.name}</h3>
+            <img src={city.icon} className="mx-auto w-16 mb-4" />
+            <p>{city.temp1} {city.temp2}</p>
+            <p className="text-sm text-white/70">{city.status}</p>
           </div>
-        )) }
+        ))}
+
       </div>
+
+      <p className="text-center text-white/40 mt-12 text-sm">
+        © 2025 BCodeStack-Clouds. All rights reserved.
+      </p>
+
     </div>
   );
 }
