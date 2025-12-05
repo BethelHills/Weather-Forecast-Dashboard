@@ -1,4 +1,7 @@
 /** @type {import('tailwindcss').Config} */
+/* eslint-env node */
+/* global module */
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     "./index.html",

@@ -11,7 +11,7 @@ export default function DetailsDark() {
           <h1 className="text-4xl font-bold">Cairo</h1>
           <p className="text-white/70">Friday, 23 May</p>
         </div>
-        <img src="/icons/cloud-sun.svg" className="w-40" />
+        <img src="/icons/cloud-sun.png" className="w-40" />
       </div>
 
       <div className="text-6xl mb-10">+30.42°</div>
@@ -22,7 +22,7 @@ export default function DetailsDark() {
             key={day}
             className="bg-white/10 p-6 rounded-xl text-center"
           >
-            <img src="/icons/sun.svg" className="mx-auto mb-3 w-12" />
+            <img src="/icons/sun.png" className="mx-auto mb-3 w-12" />
             <p>{day}</p>
             <p>+31.2°</p>
           </div>
