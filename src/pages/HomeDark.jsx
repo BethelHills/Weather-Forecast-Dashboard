@@ -1,6 +1,11 @@
-import React from "react";
-import GradientWrapper from "../components/ui/GradientWrapper";
-import CitiesList from "../components/ui/CitiesList";
+export default function HomeDark() {
+  const cities = [
+    { name: "Cairo", temp1: "+31.2°", temp2: "+30.22°", status: "Clear Cloud", icon: "/weather-icons/sun.png" },
+    { name: "London", temp1: "+30.2°", temp2: "+29.12°", status: "Cloudy Sky", icon: "/weather-icons/sun-cloud.png" },
+    { name: "Sydney", temp1: "+31.2°", temp2: "+30.22°", status: "Clear Cloud", icon: "/weather-icons/sun.png" },
+    { name: "Tokyo", temp1: "+31.2°", temp2: "+30.22°", status: "Clear Cloud", icon: "/weather-icons/windy.png" },
+    { name: "Dubai", temp1: "+31.2°", temp2: "+30.22°", status: "Rainy Street", icon: "/weather-icons/rain.png" },
+  ];
 
 export default function HomeDark() {
   const cities = [
@@ -72,9 +77,29 @@ export default function HomeDark() {
         <img src="/weather-icons/BCodeStack-Clouds-logo.png" className="w-64 opacity-90" />
       </div>
 
-  {/* Major Cities Weather */}
-  <h2 className="text-xl font-semibold mt-20 mb-6">Major Cities Weather</h2>
-  <CitiesList cities={cities} />
+      {/* Major Cities Weather */}
+      <h2 className="text-xl font-semibold mt-20 mb-6">Major Cities Weather</h2>
+
+      {/* Cards container */}
+      <div className="grid grid-cols-5 border border-white/20 rounded-xl overflow-hidden">
+
+        {cities.map((city, index) => (
+          <div
+            key={city.name}
+            className={`p-6 text-center border-r border-dotted border-white/20
+            ${index === 4 ? "border-r-0" : ""}`}
+          >
+            <h3 className="text-lg mb-3">{city.name}</h3>
+
+            <img src={city.icon} className="mx-auto w-16 mb-4" />
+
+            <p className="text-md mb-1">{city.temp1}  {city.temp2}</p>
+
+            <p className="text-sm text-white/70">{city.status}</p>
+          </div>
+        ))}
+
+      </div>
 
       {/* Footer */}
       <p className="text-center text-white/40 mt-12 text-sm">
@@ -84,3 +109,9 @@ export default function HomeDark() {
     </div>
   );
 }
+                    © 2025 BCodeStack-Clouds. All rights reserved.
+                  </p>
+
+                </div>
+              );
+            }
