@@ -1,4 +1,6 @@
 import React from "react";
+import GradientWrapper from "../components/ui/GradientWrapper";
+import CitiesList from "../components/ui/CitiesList";
 
 export default function HomeLight() {
   const cities = [
@@ -70,29 +72,9 @@ export default function HomeLight() {
         <img src="/weather-icons/BCodeStack-Clouds-logo.png" className="w-64 opacity-90" />
       </div>
 
-      {/* Major Cities Weather */}
-      <h2 className="text-xl font-semibold mt-20 mb-6 text-gray-900">Major Cities Weather</h2>
-
-      {/* Cards container */}
-      <div className="grid grid-cols-5 border border-gray-300/20 rounded-xl overflow-hidden">
-
-        {cities.map((city, index) => (
-          <div
-            key={city.name}
-            className={`p-6 text-center border-r border-dotted border-gray-300/20
-            ${index === 4 ? "border-r-0" : ""}`}
-          >
-            <h3 className="text-lg mb-3">{city.name}</h3>
-
-            <img src={city.icon} className="mx-auto w-16 mb-4" />
-
-            <p className="text-md mb-1">{city.temp1}  {city.temp2}</p>
-
-            <p className="text-sm text-gray-900/70">{city.status}</p>
-          </div>
-        ))}
-
-      </div>
+  {/* Major Cities Weather */}
+  <h2 className="text-xl font-semibold mt-20 mb-6 text-gray-900">Major Cities Weather</h2>
+  <CitiesList cities={cities} />
 
       {/* Footer */}
       <p className="text-center text-gray-900/40 mt-12 text-sm">
