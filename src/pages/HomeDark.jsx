@@ -17,23 +17,10 @@ export default function HomeDark() {
       {/* Header */}
       <div className="flex items-center justify-between px-2 mb-16">
 
-        {/* Left side: Logo + Search */}
+        {/* Left side: Logo */}
         <div className="flex items-center gap-6">
-
           {/* Logo */}
           <img src="/icons/cloud-sun.svg" alt="BCodeStack-Clouds logo" className="w-12" />
-
-          {/* Search bar */}
-          <div className="flex items-center gap-3 bg-white/10 px-5 py-3 rounded-xl w-[430px]">
-            <svg className="w-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <input
-              placeholder="Search the clouds..."
-              className="bg-transparent text-sm text-white/80 outline-none w-full"
-            />
-          </div>
-
         </div>
 
         {/* Right side: Date + Toggle + Text */}
@@ -63,27 +50,42 @@ export default function HomeDark() {
 
       </div>
 
-      {/* Body */}
-      <div className="flex justify-between items-start">
+      {/* Body - Search Box with Writeup */}
+      <div className="flex justify-between items-start mb-20">
+        
+        {/* Search Box Container with Writeup */}
+        <div className="bg-white/10 rounded-xl p-8 max-w-2xl w-full border border-white/20">
+          {/* Search Input */}
+          <div className="flex items-center gap-3 bg-white/10 px-5 py-3 rounded-xl mb-6">
+            <svg className="w-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              placeholder="Search the clouds..."
+              className="bg-transparent text-sm text-white/80 outline-none w-full"
+            />
+          </div>
 
-        <div className="max-w-xl">
-          <h1 className="text-4xl font-semibold mb-4">Welcome to BCodeStack-Clouds</h1>
+          {/* Writeup Content */}
+          <div>
+            <h1 className="text-4xl font-semibold mb-4">Welcome to BCodeStack-Clouds</h1>
 
-          <p className="text-white/80 leading-relaxed mb-2">
-            At BCodeStack-Clouds, we believe weather should not just be data, it should be clear,
-            beautiful, and useful.
-          </p>
+            <p className="text-white/80 leading-relaxed mb-2">
+              At BCodeStack-Clouds, we believe weather should not just be data, it should be clear,
+              beautiful, and useful.
+            </p>
 
-          <p className="text-white/80 leading-relaxed mb-6">
-            This app was created to help you stay prepared for your day with accurate
-            forecasts, stunning visuals, and smart features that make checking the weather
-            feel less like a chore and more like a glance at the sky.
-          </p>
+            <p className="text-white/80 leading-relaxed mb-6">
+              This app was created to help you stay prepared for your day with accurate
+              forecasts, stunning visuals, and smart features that make checking the weather
+              feel less like a chore and more like a glance at the sky.
+            </p>
 
-          <p className="text-white/80 leading-relaxed">
-            Whether you are planning a trip, dressing for the day, or just curious about
-            the clouds above.
-          </p>
+            <p className="text-white/80 leading-relaxed">
+              Whether you are planning a trip, dressing for the day, or just curious about
+              the clouds above.
+            </p>
+          </div>
         </div>
 
         <img src="/weather-icons/BCodeStack-Clouds-logo.png" className="w-64 opacity-90" />
