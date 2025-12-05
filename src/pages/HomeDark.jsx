@@ -15,36 +15,50 @@ export default function HomeDark() {
     <div className="min-h-screen w-full bg-gradient-to-br from-[#002E78] to-[#160524] text-white px-16 py-12">
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-16">
+      <div className="flex items-center justify-between px-2 mb-16">
 
-        <div className="flex items-center gap-4">
-          <img src="/weather-icons/cloud-outline.png" className="w-10" />
+        {/* Left side: Logo + Search */}
+        <div className="flex items-center gap-6">
 
-          <div className="bg-white/10 px-5 py-3 rounded-xl w-[420px]">
+          {/* Logo */}
+          <img src="/weather-icons/cloud-outline.png" className="w-12" />
+
+          {/* Search bar */}
+          <div className="flex items-center gap-3 bg-white/10 px-5 py-3 rounded-xl w-[430px]">
+            <img src="/weather-icons/search.png" className="w-5 opacity-70" />
             <input
               placeholder="Search the clouds..."
               className="bg-transparent text-sm text-white/80 outline-none w-full"
             />
           </div>
+
         </div>
 
-        <div className="flex items-center gap-6 text-sm">
+        {/* Right side: Date + Toggle + Text */}
+        <div className="flex items-center gap-10 text-sm">
 
+          {/* Date */}
           <p>Sun ,18 May</p>
 
+          {/* Toggle */}
           <div onClick={toggleTheme} className="flex items-center gap-2 cursor-pointer">
-            <div className="w-10 h-5 rounded-full bg-white/20 flex items-center px-1">
+            <div className="w-12 h-[22px] rounded-full bg-white/20 flex items-center px-[3px]">
               <div
-                className={`w-4 h-4 bg-white rounded-full transition-all duration-300 ${
-                  theme === "light" ? "translate-x-5" : ""
+                className={`w-[16px] h-[16px] bg-white rounded-full transition-all duration-300 ${
+                  theme === "light" ? "translate-x-6" : ""
                 }`}
               ></div>
             </div>
             <p>{theme === "dark" ? "Cloudy!" : "Sunny!"}</p>
           </div>
 
-          <p>The future looks <span className="font-semibold">bright</span> — stay tuned!</p>
+          {/* Right text */}
+          <p className="text-white/70">
+            The future looks <span className="font-semibold text-white">bright</span> — stay tuned!
+          </p>
+
         </div>
+
       </div>
 
       {/* Body */}
