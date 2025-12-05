@@ -1,0 +1,33 @@
+import React from "react";
+
+export default function DetailsDark() {
+  return (
+    <div className="min-h-screen bg-gradient-to-r from-darkStart to-darkEnd text-white px-12 py-10">
+
+      <p className="mb-8 cursor-pointer text-white/70">← Back to Home</p>
+
+      <div className="flex justify-between items-center mb-12">
+        <div>
+          <h1 className="text-4xl font-bold">Cairo</h1>
+          <p className="text-white/70">Friday, 23 May</p>
+        </div>
+        <img src="/icons/cloud-sun.png" className="w-40" />
+      </div>
+
+      <div className="text-6xl mb-10">+30.42°</div>
+
+      <div className="grid grid-cols-5 gap-6">
+        { ["Sun", "Mon", "Tue", "Wed", "Thu"].map((day) => (
+          <div
+            key={day}
+            className="bg-white/10 p-6 rounded-xl text-center"
+          >
+            <img src="/icons/sun.png" className="mx-auto mb-3 w-12" />
+            <p>{day}</p>
+            <p>+31.2°</p>
+          </div>
+        )) }
+      </div>
+    </div>
+  );
+}
