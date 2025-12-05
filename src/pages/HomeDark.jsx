@@ -44,7 +44,11 @@ export default function HomeDark() {
             </svg>
             <input
               placeholder="Search the clouds..."
-              className="bg-transparent text-white/90 text-sm outline-none w-full placeholder-white/60"
+              className={`bg-transparent text-sm outline-none w-full ${
+                theme === "light" 
+                  ? "text-white placeholder-white/80" 
+                  : "text-white/90 placeholder-white/60"
+              }`}
             />
           </div>
         </div>
