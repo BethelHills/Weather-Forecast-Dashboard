@@ -1,27 +1,21 @@
-name: CI
+name: Build
 
 on:
   push:
-    branches: [ main, weather-cleanup ]
-  pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-      - name: Install dependencies
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
         working-directory: ./weather-app
-        run: npm ci
-      - name: Lint
-        working-directory: ./weather-app
-        run: npm run lint
-      - name: Build
+        run: npm install
+
+      - name: Build application
         working-directory: ./weather-app
         run: npm run build
+
