@@ -23,13 +23,17 @@ export default function HomeDark() {
           <img src="/icons/cloud-sun.svg" alt="BCodeStack-Clouds logo" className="w-12" />
 
           {/* Search bar */}
-          <div className="flex items-center gap-3 bg-white/10 px-5 py-3 rounded-xl w-[430px]">
-            <svg className="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+          <div 
+            className="flex items-center gap-3 px-6 py-3 rounded-2xl w-[430px]"
+            style={{
+              background: "linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%)",
+              backdropFilter: "blur(8px)",
+            }}
+          >
+            <img src="/weather-icons/search.png" className="w-5 opacity-80" alt="Search icon" />
             <input
               placeholder="Search the clouds..."
-              className="bg-transparent text-sm text-white/80 outline-none w-full"
+              className="bg-transparent text-white/90 text-sm outline-none w-full placeholder-white/60"
             />
           </div>
         </div>
