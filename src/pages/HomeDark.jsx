@@ -164,7 +164,10 @@ export default function HomeDark() {
           </p>
         </div>
 
-        <img src="/weather-icons/BCodeStack-Clouds-logo.png" className="w-64 opacity-90" />
+        <div className="flex flex-col items-center">
+          <img src="/weather-icons/BCodeStack-Clouds-logo.png" className="w-64 opacity-90" />
+          <p className="text-white text-lg font-semibold mt-2">BCodeStack-Clouds</p>
+        </div>
       </div>
 
       {/* Cities */}
