@@ -21,7 +21,7 @@ export default function HomeDark() {
         <div className="flex items-center gap-6">
 
           {/* Logo */}
-          <img src="/icons/cloud-sun.svg" className="w-12" />
+          <img src="/icons/cloud-sun.svg" alt="BCodeStack-Clouds logo" className="w-12" />
 
           {/* Search bar */}
           <div className="flex items-center gap-3 bg-white/10 px-5 py-3 rounded-xl w-[430px]">
@@ -102,7 +102,7 @@ export default function HomeDark() {
             }`}
           >
             <h3 className="text-lg mb-3">{city.name}</h3>
-            <img src={city.icon} className="mx-auto w-16 mb-4" />
+            <img src={city.icon} alt={`${city.name} weather icon`} className="mx-auto w-16 mb-4" />
             <p>{city.temp1} {city.temp2}</p>
             <p className="text-sm text-white/70">{city.status}</p>
           </div>
