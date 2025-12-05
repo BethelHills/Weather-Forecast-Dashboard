@@ -12,7 +12,16 @@ export default function HomeDark() {
   ];
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-[#002E78] to-[#160524] text-white px-16 py-12">
+    <div 
+      className={`min-h-screen w-full text-white px-16 py-12 ${
+        theme === "light" 
+          ? "bg-gradient-to-br from-[#C48EF1] to-[#5076B4]" 
+          : "bg-gradient-to-br from-[#002E78] to-[#160524]"
+      }`}
+      style={theme === "light" ? {
+        background: "linear-gradient(135deg, #C48EF1 0%, #5076B4 100%)"
+      } : {}}
+    >
 
       {/* Header */}
       <div className="flex items-center justify-between px-2 mb-16">
