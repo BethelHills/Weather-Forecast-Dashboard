@@ -4,11 +4,11 @@ export default function HomeDark() {
   const { theme, toggleTheme } = useTheme();
 
   const cities = [
-    { name: "Cairo", temp1: "+31.2°", temp2: "+30.22°", status: "Clear cloud", icon: "/weather-icons/sun.png" },
-    { name: "London", temp1: "+30.2°", temp2: "+29.12°", status: "Cloudy sky", icon: "/weather-icons/sun-cloud.png" },
-    { name: "Sydney", temp1: "+31.2°", temp2: "+30.22°", status: "Clear cloud", icon: "/weather-icons/sun.png" },
-    { name: "Tokyo", temp1: "+31.2°", temp2: "+30.22°", status: "Clear cloud", icon: "/weather-icons/windy.png" },
-    { name: "Dubai", temp1: "+31.2°", temp2: "+30.22°", status: "Rainy street", icon: "/weather-icons/rain.png" },
+    { name: "Cairo", temp1: "+31.2°", temp2: "+30.22°", status: "Clear cloud", icon: "/icons/sun.svg" },
+    { name: "London", temp1: "+30.2°", temp2: "+29.12°", status: "Cloudy sky", icon: "/icons/cloud-sun.svg" },
+    { name: "Sydney", temp1: "+31.2°", temp2: "+30.22°", status: "Clear cloud", icon: "/icons/sun.svg" },
+    { name: "Tokyo", temp1: "+31.2°", temp2: "+30.22°", status: "Clear cloud", icon: "/icons/cloud-sun.svg" },
+    { name: "Dubai", temp1: "+31.2°", temp2: "+30.22°", status: "Rainy street", icon: "/icons/cloud-sun.svg" },
   ];
 
   return (
@@ -21,11 +21,13 @@ export default function HomeDark() {
         <div className="flex items-center gap-6">
 
           {/* Logo */}
-          <img src="/weather-icons/cloud-outline.png" className="w-12" />
+          <img src="/icons/cloud-sun.svg" className="w-12" />
 
           {/* Search bar */}
           <div className="flex items-center gap-3 bg-white/10 px-5 py-3 rounded-xl w-[430px]">
-            <img src="/weather-icons/search.png" className="w-5 opacity-70" />
+            <svg className="w-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
             <input
               placeholder="Search the clouds..."
               className="bg-transparent text-sm text-white/80 outline-none w-full"

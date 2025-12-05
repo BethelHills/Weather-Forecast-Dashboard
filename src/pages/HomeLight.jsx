@@ -27,7 +27,7 @@ export default function HomeLight() {
             key={city}
             className="bg-white/20 p-6 rounded-xl text-center"
           >
-            <img src="/icons/sun.png" className="mx-auto mb-3 w-14" />
+            <img src="/icons/sun.svg" className="mx-auto mb-3 w-14" />
             <h3 className="mb-1">{city}</h3>
             <p>+31.2° • +30.22°</p>
             <p className="text-sm">Clear cloud</p>
