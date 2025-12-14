@@ -1,0 +1,4 @@
+/* Forward to PostCSS stylesheet containing Tailwind directives */
+@import './index.pcss';
+/* Legacy entry stylesheet — forwards to index.pcss which contains Tailwind directives. */
+@import './index.pcss';
