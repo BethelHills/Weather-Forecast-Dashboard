@@ -1,21 +1,37 @@
-name: Build
+name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Install Dependencies
-        working-directory: ./weather-app
+      - name: Debug runner paths
+        run: |
+          echo "Runner pwd:"
+          pwd
+          echo "Repo root contents:"
+          ls -la
+          echo "weather-app contents:"
+          ls -la weather-app || true
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        working-directory: weather-app
         run: npm install
 
       - name: Build application
-        working-directory: ./weather-app
+        working-directory: weather-app
         run: npm run build
-
