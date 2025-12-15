@@ -35,3 +35,4 @@ jobs:
       - name: Build application
         working-directory: weather-app
         run: npm run build
+
