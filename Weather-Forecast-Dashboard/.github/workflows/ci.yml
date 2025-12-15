@@ -3,6 +3,7 @@ name: Build
 on:
   push:
     branches: ["main"]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -11,6 +12,12 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+
+      - name: Debug runner paths
+        run: |
+          echo "Runner pwd (repo root):" && pwd
+          echo "Listing repo root:" && ls -la
+          echo "Listing weather-app (if present):" && ls -la weather-app || true
 
       - name: Install Node
         uses: actions/setup-node@v3
