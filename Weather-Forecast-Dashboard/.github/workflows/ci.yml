@@ -2,9 +2,9 @@ name: Build Weather App
 
 on:
   push:
-    branches: [main]
+    branches: [main, Indent-Using-Spaces]
   pull_request:
-    branches: [main]
+    branches: [main, Indent-Using-Spaces]
 
 jobs:
   build:
