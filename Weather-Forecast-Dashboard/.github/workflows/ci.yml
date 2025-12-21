@@ -20,6 +20,16 @@ jobs:
         with:
           submodules: false
 
+      - name: Verify weather-app directory exists
+        run: |
+          if [ ! -d "weather-app" ]; then
+            echo "ERROR: weather-app directory not found!"
+            ls -la
+            exit 1
+          fi
+          echo "weather-app directory found"
+          ls -la weather-app
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
