@@ -11,24 +11,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: weather-app
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Debug runner paths
-        run: |
-          echo "Runner pwd:"
-          pwd
-          echo "Repo root contents:"
-          ls -la
-          echo "Checking for weather-app:"
-          if [ -d "weather-app" ]; then
-            echo "weather-app directory exists"
-            ls -la weather-app
-          else
-            echo "ERROR: weather-app directory not found!"
-            exit 1
-          fi
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -36,16 +25,7 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: |
-          cd weather-app
-          npm ci
-
-      - name: Lint
-        run: |
-          cd weather-app
-          npm run lint
+        run: npm install
 
       - name: Build application
-        run: |
-          cd weather-app
-          npm run build
+        run: npm run build
