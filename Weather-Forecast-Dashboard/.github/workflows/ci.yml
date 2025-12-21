@@ -11,10 +11,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: weather-app
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -25,7 +21,9 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
+        working-directory: weather-app
         run: npm install
 
-      - name: Build application
+      - name: Build
+        working-directory: weather-app
         run: npm run build
