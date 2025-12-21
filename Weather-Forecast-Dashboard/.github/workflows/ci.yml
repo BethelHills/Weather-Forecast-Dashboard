@@ -36,13 +36,16 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        working-directory: ./weather-app
-        run: npm ci
+        run: |
+          cd weather-app
+          npm ci
 
       - name: Lint
-        working-directory: ./weather-app
-        run: npm run lint
+        run: |
+          cd weather-app
+          npm run lint
 
       - name: Build application
-        working-directory: ./weather-app
-        run: npm run build
+        run: |
+          cd weather-app
+          npm run build
