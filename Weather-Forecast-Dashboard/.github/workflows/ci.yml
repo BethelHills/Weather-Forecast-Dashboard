@@ -21,8 +21,14 @@ jobs:
           pwd
           echo "Repo root contents:"
           ls -la
-          echo "weather-app contents:"
-          ls -la weather-app || true
+          echo "Checking for weather-app:"
+          if [ -d "weather-app" ]; then
+            echo "weather-app directory exists"
+            ls -la weather-app
+          else
+            echo "ERROR: weather-app directory not found!"
+            exit 1
+          fi
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -30,13 +36,13 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        working-directory: weather-app
+        working-directory: ./weather-app
         run: npm ci
 
       - name: Lint
-        working-directory: weather-app
+        working-directory: ./weather-app
         run: npm run lint
 
       - name: Build application
-        working-directory: weather-app
+        working-directory: ./weather-app
         run: npm run build
