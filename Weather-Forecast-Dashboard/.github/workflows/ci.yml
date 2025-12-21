@@ -1,0 +1,44 @@
+name: Build Weather App
+
+on:
+  push:
+    branches: [main, Indent-Using-Spaces]
+  pull_request:
+    branches: [main, Indent-Using-Spaces]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Verify weather-app directory exists
+        run: |
+          if [ ! -d "weather-app" ]; then
+            echo "ERROR: weather-app directory not found!"
+            ls -la
+            exit 1
+          fi
+          echo "weather-app directory found"
+          ls -la weather-app
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: weather-app/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd weather-app
+          npm ci
+
+      - name: Build app
+        run: |
+          cd weather-app
+          npm run build
