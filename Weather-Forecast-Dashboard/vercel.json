@@ -1,0 +1,12 @@
+{
+  "buildCommand": "cd weather-app && npm install && npm run build",
+  "outputDirectory": "weather-app/dist",
+  "installCommand": "cd weather-app && npm install",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
