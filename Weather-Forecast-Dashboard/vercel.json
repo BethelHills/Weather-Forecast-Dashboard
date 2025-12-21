@@ -1,7 +1,7 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "installCommand": "npm install",
+  "buildCommand": "cd weather-app && npm run build",
+  "outputDirectory": "weather-app/dist",
+  "installCommand": "cd weather-app && npm install",
   "framework": "vite",
   "rewrites": [
     {
