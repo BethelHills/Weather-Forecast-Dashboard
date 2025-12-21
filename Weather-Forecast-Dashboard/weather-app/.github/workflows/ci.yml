@@ -1,8 +1,9 @@
 name: Build
 
-'on':
+on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
   build:
@@ -18,4 +19,3 @@ jobs:
       - name: Build application
         working-directory: ./weather-app
         run: npm run build
-

@@ -30,9 +30,12 @@ jobs:
 
       - name: Install dependencies
         working-directory: weather-app
-        run: npm install
+        run: npm ci
+
+      - name: Lint
+        working-directory: weather-app
+        run: npm run lint
 
       - name: Build application
         working-directory: weather-app
         run: npm run build
-
