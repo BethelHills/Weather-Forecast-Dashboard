@@ -1,15 +1,18 @@
-name: CI
+name: Build Weather App
 
 on:
   push:
-    branches:
-      - main
-      - Indent-Using-Spaces
-  workflow_dispatch:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: weather-app
 
     steps:
       - name: Checkout repository
@@ -21,9 +24,7 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        working-directory: weather-app
         run: npm install
 
-      - name: Build
-        working-directory: weather-app
+      - name: Build app
         run: npm run build
