@@ -1,9 +1,7 @@
 {
-  "rootDirectory": "weather-app",
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "installCommand": "npm install",
-  "framework": "vite",
+  "buildCommand": "cd weather-app && npm install && npm run build",
+  "outputDirectory": "weather-app/dist",
+  "installCommand": "cd weather-app && npm install",
   "rewrites": [
     {
       "source": "/(.*)",
@@ -11,4 +9,3 @@
     }
   ]
 }
-
