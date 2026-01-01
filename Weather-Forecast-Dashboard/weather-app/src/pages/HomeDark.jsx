@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useTheme } from "../context/ThemeContext";
-import { useWeatherLogic } from "../hooks/useWeatherLogic";
+import useWeatherLogic from "../hooks/useWeatherLogic";
+import { iconUrl } from "../services/openWeather";
 
 export default function HomeDark() {
   const { theme, toggleTheme } = useTheme();
@@ -8,13 +9,15 @@ export default function HomeDark() {
   const {
     query,
     setQuery,
-    loading,
-    error,
     current,
     forecast,
-    majorCards,
-    onSubmitSearch,
-    loadByLocation,
+    majorCities,
+    loading,
+    error,
+    searchSubmit,
+    useMyLocation,
+    selectMajorCity,
+    reload,
   } = useWeatherLogic();
 
   const [weatherStatus, setWeatherStatus] = useState("Cloudy");
@@ -23,21 +26,14 @@ export default function HomeDark() {
     setWeatherStatus(prev => (prev === "Cloudy" ? "Rainy" : "Cloudy"));
   };
 
-  // Get weather icon URL from OpenWeatherMap icon code
-  const getWeatherIconUrl = (iconCode) => {
-    if (!iconCode) return '/icons/cloud-sun.svg';
-    // Try local icon first, fallback to OpenWeatherMap
-    return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
-  };
-
-  // Format cities data for display using majorCards from hook
-  const cities = majorCards.length > 0 
-    ? majorCards.map(card => ({
-        name: card.name,
+  // Format cities data for display using majorCities from hook
+  const cities = majorCities.length > 0 
+    ? majorCities.map(card => ({
+        name: card.city,
         temp1: `+${card.temp}°`,
         temp2: `+${card.feelsLike}°`,
-        status: card.desc,
-        icon: getWeatherIconUrl(card.icon),
+        status: card.description,
+        icon: iconUrl(card.icon),
       }))
     : [
         // Fallback data while loading
@@ -74,7 +70,7 @@ export default function HomeDark() {
 
           {/* Search bar */}
           <form 
-            onSubmit={onSubmitSearch}
+            onSubmit={searchSubmit}
             className="flex items-center gap-3 px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl w-full sm:w-[300px] md:w-[380px] lg:w-[430px]"
             style={{
               background: "linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%)",
@@ -107,7 +103,7 @@ export default function HomeDark() {
           {/* Location button */}
           <button
             type="button"
-            onClick={loadByLocation}
+            onClick={useMyLocation}
             className="px-4 py-2.5 sm:py-3 rounded-2xl text-xs sm:text-sm whitespace-nowrap"
             style={{
               background: "linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%)",
@@ -181,7 +177,7 @@ export default function HomeDark() {
 
           {/* Weather Status Text */}
           <p className="text-sm font-semibold">
-            {current ? `${current.desc} ${current.temp}°C` : weatherStatus}!
+            {current ? `${current.description} ${current.temp}°C` : weatherStatus}!
           </p>
 
           {/* Right text */}
@@ -199,15 +195,15 @@ export default function HomeDark() {
         {/* Transparent Box for Writeup */}
         <div className="bg-white/10 rounded-xl p-6 sm:p-8 max-w-2xl w-full border border-white/20">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mb-4">
-            {current ? `${current.name}, ${current.country || ''}` : 'Welcome to BCodeStack-Clouds'}
+            {current ? `${current.city}, ${current.country || ''}` : 'Welcome to BCodeStack-Clouds'}
           </h1>
 
           {current ? (
             <div className="mb-4">
               <div className="flex items-center gap-4 mb-2">
                 <img
-                  src={`https://openweathermap.org/img/wn/${current.icon}@2x.png`}
-                  alt={current.desc || "weather icon"}
+                  src={iconUrl(current.icon)}
+                  alt={current.description || "weather icon"}
                   className="w-16 h-16"
                 />
                 <div>
@@ -215,10 +211,10 @@ export default function HomeDark() {
                   <p className="text-white/80 text-sm">Feels like {current.feelsLike}°C</p>
                 </div>
               </div>
-              <p className="text-white/90 text-lg capitalize">{current.desc}</p>
+              <p className="text-white/90 text-lg capitalize">{current.description}</p>
               <div className="flex gap-4 mt-2 text-sm text-white/70">
                 <span>Humidity: {current.humidity}%</span>
-                <span>Wind: {current.wind} m/s</span>
+                <span>Wind: {current.windSpeed} m/s</span>
               </div>
             </div>
           ) : (
@@ -254,21 +250,21 @@ export default function HomeDark() {
           <h2 className="text-lg sm:text-xl font-semibold mt-12 sm:mt-16 lg:mt-20 mb-4 sm:mb-6">5-Day Forecast</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-12">
             {forecast.map((day, index) => {
-              const date = new Date(day.dayKey);
+              const date = new Date(day.date);
               const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
               return (
                 <div
-                  key={day.dayKey}
+                  key={day.date}
                   className="bg-white/10 rounded-xl p-4 text-center border border-white/20"
                 >
                   <p className="text-sm text-white/80 mb-2">{dayName}</p>
                   <img
-                    src={`https://openweathermap.org/img/wn/${day.icon}@2x.png`}
-                    alt={day.desc || "weather icon"}
+                    src={iconUrl(day.icon)}
+                    alt={day.description || "weather icon"}
                     className="mx-auto w-12 h-12 mb-2"
                   />
                   <p className="text-sm font-semibold">{day.max}° / {day.min}°</p>
-                  <p className="text-xs text-white/70 capitalize">{day.desc}</p>
+                  <p className="text-xs text-white/70 capitalize">{day.description}</p>
                 </div>
               );
             })}
@@ -284,7 +280,8 @@ export default function HomeDark() {
         {cities.map((city, index) => (
           <div
             key={city.name}
-            className={`p-4 sm:p-6 text-center border-b sm:border-b-0 sm:border-r border-dotted border-white/20 ${
+            onClick={() => selectMajorCity(city.name)}
+            className={`p-4 sm:p-6 text-center border-b sm:border-b-0 sm:border-r border-dotted border-white/20 cursor-pointer hover:bg-white/5 transition-colors ${
               index === cities.length - 1 ? "border-b-0" : ""
             } ${
               (index + 1) % 2 === 0 ? "sm:border-r-0" : ""

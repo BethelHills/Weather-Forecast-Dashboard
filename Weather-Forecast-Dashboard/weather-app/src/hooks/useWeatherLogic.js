@@ -1,160 +1,199 @@
-import { useEffect, useMemo, useState } from "react";
-import { getCurrentByCity, getCurrentByCoords, getForecastByCoords } from "../lib/weatherApi";
-import { toCityCard, toDailyForecast } from "../lib/weatherFormat";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  fetchCurrentByCity,
+  fetchForecastByCity,
+  fetchCurrentByCoords,
+  fetchForecastByCoords,
+  toDailyForecast,
+} from "../services/openWeather";
 
-const CACHE_KEY = "bcs_weather_cache_v1";
-const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
+const DEFAULT_CITY = "Lagos";
 
-function readCache() {
-  try {
-    const raw = localStorage.getItem(CACHE_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw);
-    if (!parsed?.ts) return null;
-    if (Date.now() - parsed.ts > CACHE_TTL_MS) return null;
-    return parsed;
-  } catch (e) {
-    return null;
-  }
-}
+const MAJOR_CITIES = ["Cairo", "London", "Sydney", "Tokyo", "Dubai"];
 
-function writeCache(data) {
-  try {
-    localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), ...data }));
-  } catch (e) {
-    // ignore
-  }
-}
+const roundTemp = (t) => (typeof t === "number" ? Math.round(t) : t);
 
-export function useWeatherLogic() {
-  const majorCities = useMemo(
-    () => ["Cairo", "London", "Sydney", "Tokyo", "Dubai"],
-    []
-  );
+const normalizeCurrent = (json) => {
+  const w = json?.weather?.[0] || {};
+  const main = json?.main || {};
+  const wind = json?.wind || {};
 
+  return {
+    city: json?.name || "",
+    country: json?.sys?.country || "",
+    description: w?.description || "",
+    main: w?.main || "",
+    icon: w?.icon || "",
+    temp: roundTemp(main?.temp),
+    feelsLike: roundTemp(main?.feels_like),
+    humidity: main?.humidity,
+    pressure: main?.pressure,
+    windSpeed: wind?.speed,
+    dt: json?.dt,
+  };
+};
+
+export default function useWeatherLogic() {
   const [query, setQuery] = useState("");
+  const [activeCity, setActiveCity] = useState(DEFAULT_CITY);
+
+  const [current, setCurrent] = useState(null);
+  const [forecast, setForecast] = useState([]);
+  const [majorCities, setMajorCities] = useState([]); // array of normalized current for each city
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Main displayed city weather (search or location)
-  const [current, setCurrent] = useState(null); // CityCard
-  const [forecast, setForecast] = useState([]); // daily
+  const lastReqId = useRef(0);
 
-  // Major cities cards
-  const [majorCards, setMajorCards] = useState([]);
-
-  async function loadMajorCities() {
-    try {
-      const results = await Promise.all(
-        majorCities.map(async (c) => {
-          const json = await getCurrentByCity(c);
-          return toCityCard(json);
-        })
-      );
-      setMajorCards(results);
-      writeCache({ majorCards: results });
-    } catch (e) {
-      // do not block app for this
-    }
-  }
-
-  async function loadByCity(cityName) {
-    setError("");
+  const loadCity = async (city) => {
+    const reqId = ++lastReqId.current;
     setLoading(true);
-    try {
-      const json = await getCurrentByCity(cityName);
-      const card = toCityCard(json);
-      setCurrent(card);
-
-      // forecast by coord
-      const lat = json?.coord?.lat;
-      const lon = json?.coord?.lon;
-      if (typeof lat === "number" && typeof lon === "number") {
-        const f = await getForecastByCoords(lat, lon);
-        setForecast(toDailyForecast(f));
-      } else {
-        setForecast([]);
-      }
-
-      writeCache({ current: card, forecast: forecast });
-    } catch (e) {
-      setError(e?.message || "Failed to fetch weather");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function loadByLocation() {
     setError("");
-    setLoading(true);
-
-    const getPos = () =>
-      new Promise((resolve, reject) => {
-        if (!navigator.geolocation) {
-          reject(new Error("Geolocation not supported on this device."));
-          return;
-        }
-        navigator.geolocation.getCurrentPosition(
-          (pos) => resolve(pos),
-          () => reject(new Error("Location permission denied. Search a city instead.")),
-          { enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 }
-        );
-      });
 
     try {
-      const pos = await getPos();
-      const lat = pos.coords.latitude;
-      const lon = pos.coords.longitude;
+      const [curJson, fcJson] = await Promise.all([
+        fetchCurrentByCity(city),
+        fetchForecastByCity(city),
+      ]);
 
-      const json = await getCurrentByCoords(lat, lon);
-      const card = toCityCard(json);
-      setCurrent(card);
+      if (reqId !== lastReqId.current) return;
 
-      const f = await getForecastByCoords(lat, lon);
-      setForecast(toDailyForecast(f));
+      setActiveCity(city);
+      setCurrent(normalizeCurrent(curJson));
+      setForecast(toDailyForecast(fcJson));
 
-      writeCache({ current: card, forecast: forecast });
+      localStorage.setItem("lastCity", city);
     } catch (e) {
-      setError(e?.message || "Failed to get location weather");
+      if (reqId !== lastReqId.current) return;
+      setError(e?.message || "Something went wrong");
     } finally {
-      setLoading(false);
+      if (reqId === lastReqId.current) setLoading(false);
     }
-  }
+  };
 
-  function onSubmitSearch(e) {
+  const loadCoords = async (lat, lon) => {
+    const reqId = ++lastReqId.current;
+    setLoading(true);
+    setError("");
+
+    try {
+      const [curJson, fcJson] = await Promise.all([
+        fetchCurrentByCoords(lat, lon),
+        fetchForecastByCoords(lat, lon),
+      ]);
+
+      if (reqId !== lastReqId.current) return;
+
+      const city = curJson?.name || "Current Location";
+      setActiveCity(city);
+      setCurrent(normalizeCurrent(curJson));
+      setForecast(toDailyForecast(fcJson));
+
+      localStorage.setItem("lastCity", city);
+    } catch (e) {
+      if (reqId !== lastReqId.current) return;
+      setError(e?.message || "Could not fetch location weather");
+    } finally {
+      if (reqId === lastReqId.current) setLoading(false);
+    }
+  };
+
+  const searchSubmit = async (e) => {
     e?.preventDefault?.();
     const city = query.trim();
     if (!city) return;
-    loadByCity(city);
-  }
+    await loadCity(city);
+  };
 
-  // Bootstrap: use cache first, then refresh
-  useEffect(() => {
-    const cached = readCache();
-    if (cached?.current) setCurrent(cached.current);
-    if (Array.isArray(cached?.forecast)) setForecast(cached.forecast);
-    if (Array.isArray(cached?.majorCards)) setMajorCards(cached.majorCards);
-
-    // Always refresh major cities once
-    loadMajorCities();
-
-    // Auto load location if no cached current city
-    if (!cached?.current) {
-      loadByLocation();
+  const useMyLocation = () => {
+    if (!navigator.geolocation) {
+      setError("Geolocation not supported on this device");
+      return;
     }
+    setError("");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        loadCoords(latitude, longitude);
+      },
+      () => setError("Location permission denied"),
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  };
+
+  const selectMajorCity = (city) => {
+    setQuery(city);
+    loadCity(city);
+  };
+
+  // Load major cities in background
+  useEffect(() => {
+    let cancelled = false;
+
+    const run = async () => {
+      try {
+        const results = await Promise.all(
+          MAJOR_CITIES.map(async (c) => {
+            const j = await fetchCurrentByCity(c);
+            return normalizeCurrent(j);
+          })
+        );
+        if (!cancelled) setMajorCities(results);
+      } catch {
+        // ignore (not critical)
+      }
+    };
+
+    run();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Initial load - try location first, then fallback to saved/default city
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      // No geolocation support, use saved/default city
+      const saved = localStorage.getItem("lastCity");
+      loadCity(saved || DEFAULT_CITY);
+      return;
+    }
+
+    // Try to get location automatically
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        loadCoords(latitude, longitude);
+      },
+      () => {
+        // Location denied or failed, fallback to saved/default city
+        const saved = localStorage.getItem("lastCity");
+        loadCity(saved || DEFAULT_CITY);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return {
-    query,
-    setQuery,
-    loading,
-    error,
-    current,
-    forecast,
-    majorCards,
-    onSubmitSearch,
-    loadByLocation,
-    loadByCity,
-  };
+  return useMemo(
+    () => ({
+      // state
+      query,
+      activeCity,
+      current,
+      forecast,
+      majorCities,
+      loading,
+      error,
+
+      // actions
+      setQuery,
+      searchSubmit,
+      useMyLocation,
+      selectMajorCity,
+      reload: () => loadCity(activeCity),
+    }),
+    [query, activeCity, current, forecast, majorCities, loading, error]
+  );
 }
