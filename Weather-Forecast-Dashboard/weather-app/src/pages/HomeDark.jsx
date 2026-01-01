@@ -1,22 +1,59 @@
 import { useState } from "react";
 import { useTheme } from "../context/ThemeContext";
+import { useWeather, useMultipleCitiesWeather } from "../hooks/useWeather";
 
 export default function HomeDark() {
   const { theme, toggleTheme } = useTheme();
 
   const [weatherStatus, setWeatherStatus] = useState("Cloudy");
 
+  // Fetch current location weather (Lagos, Nigeria - default coordinates)
+  const { weatherData: currentWeather, loading: currentLoading } = useWeather({
+    lat: 6.5244,
+    lon: 3.3792
+  });
+
+  // Fetch weather for major cities
+  const cityNames = ["Cairo", "London", "Sydney", "Tokyo", "Dubai"];
+  const { citiesWeather, loading: citiesLoading } = useMultipleCitiesWeather(cityNames);
+
   const toggleWeather = () => {
     setWeatherStatus(prev => (prev === "Cloudy" ? "Rainy" : "Cloudy"));
   };
 
-  const cities = [
-    { name: "Cairo", temp1: "+31.2°", temp2: "+30.22°", status: "Clear cloud", icon: "/icons/sun.svg" },
-    { name: "London", temp1: "+30.2°", temp2: "+29.12°", status: "Cloudy sky", icon: "/icons/cloud-sun.svg" },
-    { name: "Sydney", temp1: "+31.2°", temp2: "+30.22°", status: "Clear cloud", icon: "/icons/sun.svg" },
-    { name: "Tokyo", temp1: "+31.2°", temp2: "+30.22°", status: "Clear cloud", icon: "/icons/cloud-sun.svg" },
-    { name: "Dubai", temp1: "+31.2°", temp2: "+30.22°", status: "Rainy street", icon: "/icons/cloud-sun.svg" },
-  ];
+  // Get weather icon based on OpenWeatherMap condition
+  const getWeatherIcon = (mainCondition) => {
+    const iconMap = {
+      'Clear': '/icons/sun.svg',
+      'Clouds': '/icons/cloud-sun.svg',
+      'Rain': '/icons/cloud-sun.svg',
+      'Drizzle': '/icons/cloud-sun.svg',
+      'Thunderstorm': '/icons/cloud-sun.svg',
+      'Snow': '/icons/cloud-sun.svg',
+      'Mist': '/icons/cloud-sun.svg',
+      'Fog': '/icons/cloud-sun.svg',
+      'Haze': '/icons/cloud-sun.svg',
+    };
+    return iconMap[mainCondition] || '/icons/cloud-sun.svg';
+  };
+
+  // Format cities data for display
+  const cities = citiesWeather.length > 0 
+    ? citiesWeather.map(city => ({
+        name: city.city,
+        temp1: `+${city.temperature}°`,
+        temp2: `+${city.feelsLike}°`,
+        status: city.description,
+        icon: city.iconUrl || getWeatherIcon(city.main),
+      }))
+    : [
+        // Fallback data while loading
+        { name: "Cairo", temp1: "+31.2°", temp2: "+30.22°", status: "Loading...", icon: "/icons/sun.svg" },
+        { name: "London", temp1: "+30.2°", temp2: "+29.12°", status: "Loading...", icon: "/icons/cloud-sun.svg" },
+        { name: "Sydney", temp1: "+31.2°", temp2: "+30.22°", status: "Loading...", icon: "/icons/sun.svg" },
+        { name: "Tokyo", temp1: "+31.2°", temp2: "+30.22°", status: "Loading...", icon: "/icons/cloud-sun.svg" },
+        { name: "Dubai", temp1: "+31.2°", temp2: "+30.22°", status: "Loading...", icon: "/icons/cloud-sun.svg" },
+      ];
 
   return (
     <div 
@@ -129,7 +166,9 @@ export default function HomeDark() {
           </div>
 
           {/* Weather Status Text */}
-          <p className="text-sm font-semibold">{weatherStatus}!</p>
+          <p className="text-sm font-semibold">
+            {currentWeather ? `${currentWeather.description} ${currentWeather.temperature}°C` : weatherStatus}!
+          </p>
 
           {/* Right text */}
           <p className="text-white/70 text-xs sm:text-sm">
