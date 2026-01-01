@@ -18,9 +18,10 @@ jobs:
 
       - name: Verify weather-app directory exists
         run: |
+          pwd
+          ls -la
           if [ ! -d "weather-app" ]; then
             echo "ERROR: weather-app directory not found!"
-            ls -la
             exit 1
           fi
           echo "weather-app directory found"
@@ -34,11 +35,9 @@ jobs:
           cache-dependency-path: weather-app/package-lock.json
 
       - name: Install dependencies
-        run: |
-          cd weather-app
-          npm ci
+        working-directory: weather-app
+        run: npm ci
 
       - name: Build app
-        run: |
-          cd weather-app
-          npm run build
+        working-directory: weather-app
+        run: npm run build
