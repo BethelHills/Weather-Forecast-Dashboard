@@ -1,5 +1,9 @@
-const API_KEY = '6047ac99cf043a0dcd05fdb2e6ec37c6';
+const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
 const BASE_URL = 'https://api.openweathermap.org/data/2.5';
+
+if (!API_KEY) {
+  console.error('VITE_OPENWEATHER_API_KEY is not set in environment variables');
+}
 
 /**
  * Fetch current weather data by latitude and longitude
