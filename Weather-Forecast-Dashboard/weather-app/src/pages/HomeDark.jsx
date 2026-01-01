@@ -1,50 +1,41 @@
 import { useState } from "react";
 import { useTheme } from "../context/ThemeContext";
-import { useWeather, useMultipleCitiesWeather } from "../hooks/useWeather";
+import { useWeatherLogic } from "../hooks/useWeatherLogic";
 
 export default function HomeDark() {
   const { theme, toggleTheme } = useTheme();
 
+  const {
+    query,
+    setQuery,
+    loading,
+    error,
+    current,
+    forecast,
+    majorCards,
+    onSubmitSearch,
+    loadByLocation,
+  } = useWeatherLogic();
+
   const [weatherStatus, setWeatherStatus] = useState("Cloudy");
-
-  // Fetch current location weather (Lagos, Nigeria - default coordinates)
-  const { weatherData: currentWeather, loading: currentLoading } = useWeather({
-    lat: 6.5244,
-    lon: 3.3792
-  });
-
-  // Fetch weather for major cities
-  const cityNames = ["Cairo", "London", "Sydney", "Tokyo", "Dubai"];
-  const { citiesWeather, loading: citiesLoading } = useMultipleCitiesWeather(cityNames);
 
   const toggleWeather = () => {
     setWeatherStatus(prev => (prev === "Cloudy" ? "Rainy" : "Cloudy"));
   };
 
-  // Get weather icon based on OpenWeatherMap condition
-  const getWeatherIcon = (mainCondition) => {
-    const iconMap = {
-      'Clear': '/icons/sun.svg',
-      'Clouds': '/icons/cloud-sun.svg',
-      'Rain': '/icons/cloud-sun.svg',
-      'Drizzle': '/icons/cloud-sun.svg',
-      'Thunderstorm': '/icons/cloud-sun.svg',
-      'Snow': '/icons/cloud-sun.svg',
-      'Mist': '/icons/cloud-sun.svg',
-      'Fog': '/icons/cloud-sun.svg',
-      'Haze': '/icons/cloud-sun.svg',
-    };
-    return iconMap[mainCondition] || '/icons/cloud-sun.svg';
+  // Get weather icon URL from OpenWeatherMap icon code
+  const getWeatherIconUrl = (iconCode) => {
+    return iconCode ? `https://openweathermap.org/img/wn/${iconCode}@2x.png` : '/icons/cloud-sun.svg';
   };
 
-  // Format cities data for display
-  const cities = citiesWeather.length > 0 
-    ? citiesWeather.map(city => ({
-        name: city.city,
-        temp1: `+${city.temperature}°`,
-        temp2: `+${city.feelsLike}°`,
-        status: city.description,
-        icon: city.iconUrl || getWeatherIcon(city.main),
+  // Format cities data for display using majorCards from hook
+  const cities = majorCards.length > 0 
+    ? majorCards.map(card => ({
+        name: card.name,
+        temp1: `+${card.temp}°`,
+        temp2: `+${card.feelsLike}°`,
+        status: card.desc,
+        icon: getWeatherIconUrl(card.icon),
       }))
     : [
         // Fallback data while loading
@@ -76,7 +67,8 @@ export default function HomeDark() {
           <img src="/icons/cloud-sun.svg" alt="BCodeStack-Clouds logo" className="w-10 sm:w-12" />
 
           {/* Search bar */}
-          <div 
+          <form 
+            onSubmit={onSubmitSearch}
             className="flex items-center gap-3 px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl w-full sm:w-[300px] md:w-[380px] lg:w-[430px]"
             style={{
               background: "linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%)",
@@ -93,6 +85,9 @@ export default function HomeDark() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
               placeholder="Search the clouds..."
               className={`bg-transparent text-sm outline-none w-full ${
                 theme === "light" 
@@ -101,7 +96,7 @@ export default function HomeDark() {
               }`}
               style={theme === "light" ? { color: "#ffffff" } : {}}
             />
-          </div>
+          </form>
         </div>
 
         {/* Right side: Date + Toggle + Text */}
@@ -167,7 +162,7 @@ export default function HomeDark() {
 
           {/* Weather Status Text */}
           <p className="text-sm font-semibold">
-            {currentWeather ? `${currentWeather.description} ${currentWeather.temperature}°C` : weatherStatus}!
+            {current ? `${current.desc} ${current.temp}°C` : weatherStatus}!
           </p>
 
           {/* Right text */}
