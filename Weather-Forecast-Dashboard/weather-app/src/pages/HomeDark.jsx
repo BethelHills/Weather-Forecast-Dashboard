@@ -25,7 +25,9 @@ export default function HomeDark() {
 
   // Get weather icon URL from OpenWeatherMap icon code
   const getWeatherIconUrl = (iconCode) => {
-    return iconCode ? `https://openweathermap.org/img/wn/${iconCode}@2x.png` : '/icons/cloud-sun.svg';
+    if (!iconCode) return '/icons/cloud-sun.svg';
+    // Try local icon first, fallback to OpenWeatherMap
+    return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
   };
 
   // Format cities data for display using majorCards from hook
@@ -57,6 +59,10 @@ export default function HomeDark() {
         background: "linear-gradient(135deg, #C48EF1 0%, #5076B4 100%)"
       } : {}}
     >
+
+      {/* Loading and Error messages */}
+      {loading && <p className="text-xs text-white/60 px-2 mb-2">Loading…</p>}
+      {error && <p className="text-xs text-red-300 px-2 mb-2">{error}</p>}
 
       {/* Header */}
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 lg:gap-0 px-2 mb-8 sm:mb-12 lg:mb-16">
@@ -97,6 +103,19 @@ export default function HomeDark() {
               style={theme === "light" ? { color: "#ffffff" } : {}}
             />
           </form>
+
+          {/* Location button */}
+          <button
+            type="button"
+            onClick={loadByLocation}
+            className="px-4 py-2.5 sm:py-3 rounded-2xl text-xs sm:text-sm whitespace-nowrap"
+            style={{
+              background: "linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%)",
+              backdropFilter: "blur(8px)",
+            }}
+          >
+            Use my location
+          </button>
         </div>
 
         {/* Right side: Date + Toggle + Text */}
@@ -179,23 +198,48 @@ export default function HomeDark() {
         
         {/* Transparent Box for Writeup */}
         <div className="bg-white/10 rounded-xl p-6 sm:p-8 max-w-2xl w-full border border-white/20">
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mb-4">Welcome to BCodeStack-Clouds</h1>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mb-4">
+            {current ? `${current.name}, ${current.country || ''}` : 'Welcome to BCodeStack-Clouds'}
+          </h1>
 
-          <p className="text-white/80 leading-relaxed mb-2">
-            At BCodeStack-Clouds, we believe weather should not just be data, it should be clear,
-            beautiful, and useful.
-          </p>
+          {current ? (
+            <div className="mb-4">
+              <div className="flex items-center gap-4 mb-2">
+                <img
+                  src={`https://openweathermap.org/img/wn/${current.icon}@2x.png`}
+                  alt={current.desc || "weather icon"}
+                  className="w-16 h-16"
+                />
+                <div>
+                  <p className="text-3xl sm:text-4xl font-bold">{current.temp}°C</p>
+                  <p className="text-white/80 text-sm">Feels like {current.feelsLike}°C</p>
+                </div>
+              </div>
+              <p className="text-white/90 text-lg capitalize">{current.desc}</p>
+              <div className="flex gap-4 mt-2 text-sm text-white/70">
+                <span>Humidity: {current.humidity}%</span>
+                <span>Wind: {current.wind} m/s</span>
+              </div>
+            </div>
+          ) : (
+            <>
+              <p className="text-white/80 leading-relaxed mb-2">
+                At BCodeStack-Clouds, we believe weather should not just be data, it should be clear,
+                beautiful, and useful.
+              </p>
 
-          <p className="text-white/80 leading-relaxed mb-6">
-            This app was created to help you stay prepared for your day with accurate
-            forecasts, stunning visuals, and smart features that make checking the weather
-            feel less like a chore and more like a glance at the sky.
-          </p>
+              <p className="text-white/80 leading-relaxed mb-6">
+                This app was created to help you stay prepared for your day with accurate
+                forecasts, stunning visuals, and smart features that make checking the weather
+                feel less like a chore and more like a glance at the sky.
+              </p>
 
-          <p className="text-white/80 leading-relaxed">
-            Whether you are planning a trip, dressing for the day, or just curious about
-            the clouds above.
-          </p>
+              <p className="text-white/80 leading-relaxed">
+                Whether you are planning a trip, dressing for the day, or just curious about
+                the clouds above.
+              </p>
+            </>
+          )}
         </div>
 
         <div className="flex flex-col items-center w-full lg:w-auto">
@@ -203,6 +247,34 @@ export default function HomeDark() {
           <p className="text-white text-base sm:text-lg font-semibold mt-2">BCodeStack-Clouds</p>
         </div>
       </div>
+
+      {/* Forecast section */}
+      {forecast.length > 0 && (
+        <>
+          <h2 className="text-lg sm:text-xl font-semibold mt-12 sm:mt-16 lg:mt-20 mb-4 sm:mb-6">5-Day Forecast</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-12">
+            {forecast.map((day, index) => {
+              const date = new Date(day.dayKey);
+              const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+              return (
+                <div
+                  key={day.dayKey}
+                  className="bg-white/10 rounded-xl p-4 text-center border border-white/20"
+                >
+                  <p className="text-sm text-white/80 mb-2">{dayName}</p>
+                  <img
+                    src={`https://openweathermap.org/img/wn/${day.icon}@2x.png`}
+                    alt={day.desc || "weather icon"}
+                    className="mx-auto w-12 h-12 mb-2"
+                  />
+                  <p className="text-sm font-semibold">{day.max}° / {day.min}°</p>
+                  <p className="text-xs text-white/70 capitalize">{day.desc}</p>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
 
       {/* Cities */}
       <h2 className="text-lg sm:text-xl font-semibold mt-12 sm:mt-16 lg:mt-20 mb-4 sm:mb-6">Major Cities Weather</h2>
@@ -225,7 +297,7 @@ export default function HomeDark() {
             <h3 className="text-base sm:text-lg mb-2 sm:mb-3">{city.name}</h3>
             <img src={city.icon} alt={`${city.name} weather icon`} className="mx-auto w-12 sm:w-16 mb-3 sm:mb-4" />
             <p className="text-sm sm:text-base">{city.temp1} {city.temp2}</p>
-            <p className="text-xs sm:text-sm text-white/70">{city.status}</p>
+            <p className="text-xs sm:text-sm text-white/70 capitalize">{city.status}</p>
           </div>
         ))}
 
