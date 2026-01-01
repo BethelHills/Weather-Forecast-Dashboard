@@ -1,5 +1,28 @@
 import { useState, useEffect } from 'react';
-import { getWeatherByCoordinates, getWeatherByCity, formatWeatherData } from '../services/weatherApi';
+import { getCurrentByCity, getCurrentByCoords } from '../lib/weatherApi';
+
+/**
+ * Format weather data for display
+ * @param {Object} data - Raw weather data from API
+ * @returns {Object} Formatted weather data
+ */
+function formatWeatherData(data) {
+  if (!data) return null;
+  
+  return {
+    city: data.name,
+    country: data.sys?.country,
+    temperature: Math.round(data.main?.temp || 0),
+    feelsLike: Math.round(data.main?.feels_like || 0),
+    description: data.weather?.[0]?.description || '',
+    main: data.weather?.[0]?.main || '',
+    humidity: data.main?.humidity || 0,
+    windSpeed: data.wind?.speed || 0,
+    pressure: data.main?.pressure || 0,
+    icon: data.weather?.[0]?.icon || '',
+    iconUrl: `https://openweathermap.org/img/wn/${data.weather?.[0]?.icon || '01d'}@2x.png`,
+  };
+}
 
 /**
  * Custom hook to fetch and manage weather data
@@ -22,9 +45,9 @@ export const useWeather = ({ lat = 6.5244, lon = 3.3792, city = null } = {}) => 
       try {
         let data;
         if (city) {
-          data = await getWeatherByCity(city);
+          data = await getCurrentByCity(city);
         } else {
-          data = await getWeatherByCoordinates(lat, lon);
+          data = await getCurrentByCoords(lat, lon);
         }
         
         const formatted = formatWeatherData(data);
@@ -64,7 +87,7 @@ export const useMultipleCitiesWeather = (cities = []) => {
       setError(null);
 
       try {
-        const promises = cities.map(city => getWeatherByCity(city));
+        const promises = cities.map(city => getCurrentByCity(city));
         const results = await Promise.allSettled(promises);
         
         const weatherData = results.map((result, index) => {
