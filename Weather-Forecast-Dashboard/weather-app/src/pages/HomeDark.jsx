@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
 import useWeatherLogic from "../hooks/useWeatherLogic";
 import { iconUrl } from "../services/openWeather";
@@ -21,6 +21,22 @@ export default function HomeDark() {
   } = useWeatherLogic();
 
   const [weatherStatus, setWeatherStatus] = useState("Cloudy");
+  const [currentDate, setCurrentDate] = useState("");
+
+  useEffect(() => {
+    const updateDate = () => {
+      const date = new Date();
+      const weekday = date.toLocaleDateString('en-US', { weekday: 'short' });
+      const day = date.getDate();
+      const month = date.toLocaleDateString('en-US', { month: 'short' });
+      setCurrentDate(`${weekday} , ${day} ${month}`);
+    };
+    
+    updateDate();
+    // Update date every minute to ensure it stays current
+    const interval = setInterval(updateDate, 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   const toggleWeather = () => {
     setWeatherStatus(prev => (prev === "Cloudy" ? "Rainy" : "Cloudy"));
@@ -118,15 +134,7 @@ export default function HomeDark() {
         <div className="flex flex-wrap items-center gap-4 sm:gap-6 lg:gap-10 text-xs sm:text-sm w-full lg:w-auto justify-between lg:justify-start">
 
           {/* Date */}
-          <p>
-            {(() => {
-              const date = new Date();
-              const weekday = date.toLocaleDateString('en-US', { weekday: 'short' });
-              const day = date.getDate();
-              const month = date.toLocaleDateString('en-US', { month: 'short' });
-              return `${weekday} , ${day} ${month}`;
-            })()}
-          </p>
+          <p>{currentDate}</p>
 
           {/* Theme Toggle Switch */}
           <div 
