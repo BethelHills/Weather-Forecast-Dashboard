@@ -127,7 +127,7 @@ export default function useWeatherLogic() {
     loadCity(city);
   };
 
-  // Load major cities in background
+  // Load major cities in background and refresh periodically
   useEffect(() => {
     let cancelled = false;
 
@@ -145,14 +145,24 @@ export default function useWeatherLogic() {
       }
     };
 
+    // Load immediately
     run();
+    
+    // Refresh major cities every 10 minutes to keep data current
+    const interval = setInterval(() => {
+      if (!cancelled) run();
+    }, 10 * 60 * 1000); // 10 minutes
+
     return () => {
       cancelled = true;
+      clearInterval(interval);
     };
   }, []);
 
   // Initial load - try location first, then fallback to saved/default city
   useEffect(() => {
+    if (typeof window === 'undefined') return; // Only run in browser
+    
     if (!navigator.geolocation) {
       // No geolocation support, use saved/default city
       const saved = localStorage.getItem("lastCity");
@@ -171,10 +181,41 @@ export default function useWeatherLogic() {
         const saved = localStorage.getItem("lastCity");
         loadCity(saved || DEFAULT_CITY);
       },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 } // maximumAge: 0 ensures fresh location data
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Auto-refresh current weather every 10 minutes
+  useEffect(() => {
+    if (!activeCity) return;
+    
+    const interval = setInterval(() => {
+      if (activeCity === "Current Location") {
+        // For current location, try to refresh with geolocation
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              const { latitude, longitude } = pos.coords;
+              loadCoords(latitude, longitude);
+            },
+            () => {
+              // If location fails, reload the last city
+              const saved = localStorage.getItem("lastCity");
+              if (saved) loadCity(saved);
+            },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+          );
+        }
+      } else {
+        // For named cities, reload directly
+        loadCity(activeCity);
+      }
+    }, 10 * 60 * 1000); // Refresh every 10 minutes
+
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeCity]);
 
   return useMemo(
     () => ({
@@ -192,7 +233,22 @@ export default function useWeatherLogic() {
       searchSubmit,
       useMyLocation,
       selectMajorCity,
-      reload: () => loadCity(activeCity),
+      reload: () => {
+        if (activeCity === "Current Location") {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+              (pos) => {
+                const { latitude, longitude } = pos.coords;
+                loadCoords(latitude, longitude);
+              },
+              () => setError("Location permission denied"),
+              { enableHighAccuracy: true, timeout: 10000 }
+            );
+          }
+        } else {
+          loadCity(activeCity);
+        }
+      },
     }),
     [query, activeCity, current, forecast, majorCities, loading, error]
   );

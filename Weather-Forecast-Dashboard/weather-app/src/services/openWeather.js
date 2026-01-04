@@ -39,9 +39,11 @@ const safeFetch = async (url) => {
 };
 
 export const iconUrl = (iconCode) => {
-  // If you have local icons in public/weather-icons:
-  // return `/weather-icons/${iconCode}.png`;
-  // Otherwise use OpenWeather icons:
+  if (!iconCode) {
+    // Default icon if no code provided
+    return `https://openweathermap.org/img/wn/01d@2x.png`;
+  }
+  // Use OpenWeather icons - these are real-time weather icons from the API
   return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
 };
 
