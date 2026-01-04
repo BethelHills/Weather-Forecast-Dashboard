@@ -24,18 +24,22 @@ export default function HomeDark() {
   const [currentDate, setCurrentDate] = useState("");
 
   useEffect(() => {
-    const updateDate = () => {
-      const date = new Date();
-      const weekday = date.toLocaleDateString('en-US', { weekday: 'short' });
-      const day = date.getDate();
-      const month = date.toLocaleDateString('en-US', { month: 'short' });
-      setCurrentDate(`${weekday} , ${day} ${month}`);
-    };
-    
-    updateDate();
-    // Update date every minute to ensure it stays current
-    const interval = setInterval(updateDate, 60000);
-    return () => clearInterval(interval);
+    // Ensure date is calculated on client-side only
+    if (typeof window !== 'undefined') {
+      const updateDate = () => {
+        const date = new Date();
+        const weekday = date.toLocaleDateString('en-US', { weekday: 'short' });
+        const day = date.getDate();
+        const month = date.toLocaleDateString('en-US', { month: 'short' });
+        setCurrentDate(`${weekday}, ${day} ${month}`);
+      };
+      
+      // Update immediately
+      updateDate();
+      // Update date every minute to ensure it stays current
+      const interval = setInterval(updateDate, 60000);
+      return () => clearInterval(interval);
+    }
   }, []);
 
   const toggleWeather = () => {
