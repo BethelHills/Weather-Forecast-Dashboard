@@ -118,7 +118,15 @@ export default function HomeDark() {
         <div className="flex flex-wrap items-center gap-4 sm:gap-6 lg:gap-10 text-xs sm:text-sm w-full lg:w-auto justify-between lg:justify-start">
 
           {/* Date */}
-          <p className="hidden sm:block">Sun ,18 May</p>
+          <p className="hidden sm:block">
+            {(() => {
+              const date = new Date();
+              const weekday = date.toLocaleDateString('en-US', { weekday: 'short' });
+              const day = date.getDate();
+              const month = date.toLocaleDateString('en-US', { month: 'short' });
+              return `${weekday} , ${day} ${month}`;
+            })()}
+          </p>
 
           {/* Theme Toggle Switch */}
           <div 
